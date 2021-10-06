@@ -20,7 +20,7 @@ export class User extends BaseEntity {
   @Column()
   last_name: string;
 
-  @Column({ unique: true })
+  @Column()
   email: string;
 
   @Column({ unique: true })
@@ -29,7 +29,7 @@ export class User extends BaseEntity {
   @Column()
   password: string;
 
-  @Column({ unique: true })
+  @Column()
   passport_id: string;
 
   @Column({ type: "text" })

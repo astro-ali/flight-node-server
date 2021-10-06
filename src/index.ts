@@ -4,6 +4,7 @@ import * as express from "express";
 import CONFIG from "./config";
 import { okRes } from "./utility/util";
 import notFound from "./middlewares/web/notFound";
+import webv1 from "./routes/web/v1";
 const app = express();
 
 const port = CONFIG.port || 4000;
@@ -19,10 +20,10 @@ createConnection()
     });
 
     // all the routes for the normal user
-    app.use("/v1", webRouter);
+    app.use("/v1", webv1);
 
     // all the routes for the admin user
-    app.use("/admin/v1", adminRouter);
+    // app.use("/admin/v1", adminv1);
 
     app.use(notFound);
 

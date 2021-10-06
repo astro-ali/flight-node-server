@@ -13,7 +13,6 @@ const errRes = (res: Response, err: any, code = 400, key = "err") => {
     err = obj;
   }
   if (typeof code !== "undefined") res.statusCode = code;
-  console.log(typeof err);
   return res.json({ status: false, errMsg: err });
 };
 

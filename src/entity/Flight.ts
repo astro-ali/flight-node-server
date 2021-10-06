@@ -35,8 +35,7 @@ export class Flight extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  // reations
-
+  // relations
   // many to many
   // flight --> user
   @ManyToMany(() => User, (user) => user.flights)
