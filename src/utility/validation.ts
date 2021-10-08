@@ -51,4 +51,15 @@ export default class Validate {
         type: "string",
       },
   });
+
+  static changePassword = (must = true) => ({
+    password: {
+      presence: must,
+      type: "string",
+    },
+    new_password: {
+        presence: must,
+        type: "string",
+      },
+  });
 }

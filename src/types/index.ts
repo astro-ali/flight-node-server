@@ -13,4 +13,9 @@ type LoginBody = {
     password: string;
 }
 
-export { RegisterBody, LoginBody};
+type changePassowrdBody = {
+    password: string;
+    new_password: string;
+}
+
+export { RegisterBody, LoginBody, changePassowrdBody};

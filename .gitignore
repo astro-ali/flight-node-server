@@ -6,3 +6,6 @@ build/
 tmp/
 temp/
 .env
+tests
+tests/
+adminCredintials.txt
