@@ -1,3 +1,5 @@
+import { City } from "../entity/City"
+
 type RegisterBody = {
     first_name: string;
     last_name: string;
@@ -18,4 +20,16 @@ type changePassowrdBody = {
     new_password: string;
 }
 
-export { RegisterBody, LoginBody, changePassowrdBody};
+type cityBody = {
+    name: string;
+    code: string;
+}
+
+type AirportBody = {
+    name: string;
+    code: string;
+    city: City | number;
+}
+
+
+export { RegisterBody, LoginBody, changePassowrdBody, cityBody, AirportBody};

@@ -34,8 +34,14 @@ const okRes = (res: Response, data, code = 200) => {
 // will generate you a 4-digits otp number.
 const getOtp = () => Math.floor(1000 + Math.random() * 9000);
 
+// if it's a number return flase
+//
 const isNotANumber = (x: any) => {
   return x !== x;
 };
 
-export { okRes, errRes, getOtp, isNotANumber };
+const isNumber = (n: any) => {
+  return !isNaN(parseFloat(n)) && !isNaN(n - 0);
+}
+
+export { okRes, errRes, getOtp, isNotANumber, isNumber };

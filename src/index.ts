@@ -7,7 +7,6 @@ import notFound from "./middlewares/web/notFound";
 import webv1 from "./routes/web/v1";
 import adminv1 from "./routes/admin/v1";
 const app = express();
-
 const port = CONFIG.port || 4000;
 
 createConnection()

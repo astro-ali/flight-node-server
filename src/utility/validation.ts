@@ -47,9 +47,9 @@ export default class Validate {
       type: "string",
     },
     password: {
-        presence: must,
-        type: "string",
-      },
+      presence: must,
+      type: "string",
+    },
   });
 
   static changePassword = (must = true) => ({
@@ -58,8 +58,50 @@ export default class Validate {
       type: "string",
     },
     new_password: {
-        presence: must,
-        type: "string",
+      presence: must,
+      type: "string",
+    },
+  });
+
+  static city = (must = true) => ({
+    name: {
+      presence: must,
+      type: "string",
+      length: {
+        minimum: 1,
+        message: "must be at least 1 character",
       },
+    },
+    code: {
+      presence: must,
+      type: "string",
+      length: {
+        minimum: 3,
+        message: "must be at least 3 characters",
+      },
+    },
+  });
+
+  static airport = (must = true) => ({
+    name: {
+      presence: must,
+      type: "string",
+      length: {
+        minimum: 1,
+        message: "must be at least 1 character",
+      },
+    },
+    code: {
+      presence: must,
+      type: "string",
+      length: {
+        minimum: 3,
+        message: "must be at least 3 characters",
+      },
+    },
+    city: {
+      presence: must,
+      type: "number",
+    },
   });
 }
