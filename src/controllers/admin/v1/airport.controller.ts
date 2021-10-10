@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { AirportBody } from "../../../types";
-import { errRes, okRes } from "../../../utility/util";
+import { errRes, isNumber, okRes } from "../../../utility/util";
 import * as validate from "validate.js";
 import Validator from "../../../utility/validation";
 import { Airport } from "../../../entity/Airport";
@@ -45,36 +45,87 @@ export default class AirportController {
   }
 
   /**
-   * 
-   * @param req 
-   * @param res 
+   *
+   * @param req
+   * @param res
    * @returns response obj with the edited airport
    */
   static async edit(req: Request, res: Response): Promise<Response> {
-    // TODO:
     // get the id param and the body
+    let id = req.params.id;
+    let body = req.body;
 
     // validate the id and the body
+    let number = isNumber(id);
+    if (!number) return errRes(res, "id pram should be a number");
+    let notValid = validate(body, Validator.airport(false));
+    if (notValid) return errRes(res, notValid);
 
-    // get the Airport object from DB by id
+    try {
+      // if city in body then get the city object by id
+      if ("city" in body) {
+        let city = await City.findOne({ where: { id: parseInt(body.city) } });
+        if (!city) return errRes(res, "City of the given id not found", 404);
 
-    // update it
+        // get the Airport object from DB by id
+        var airport = await Airport.findOne({
+          where: { id: parseInt(id) },
+          relations: ["city"],
+        });
+        if (!airport) return errRes(res, "Not found", 404);
+        // update it
+        Object.keys(airport).forEach((key) => {
+          if (key === "city") {
+            airport[key] = city;
+          } else {
+            if (body[key]) airport[key] = body[key];
+          }
+        });
+        // save in DB
+        await airport.save();
+      } else {
+        // get the Airport object from DB by id
+        var airport = await Airport.findOne({
+          where: { id: parseInt(id) },
+          relations: ["city"],
+        });
+        if (!airport) return errRes(res, "Not found", 404);
 
-    // save in DB
+        // update it
+        Object.keys(airport).forEach((key) => {
+          if (body[key]) airport[key] = body[key];
+        });
+
+        // save in DB
+        await airport.save();
+      }
+    } catch (error) {
+      let errMsg = error.detail ? error.detail : error;
+      return errRes(res, { errMsg });
+    }
 
     // return ok res with the new Airport object.
-    return okRes(res, {});
+    return okRes(res, { airport });
   }
 
   static async delete(req: Request, res: Response): Promise<Response> {
-    // TODO:
     // get the id from req params
+    let id = req.params.id;
 
     // validate the id param
+    let number = isNumber(id);
+    if (!number) return errRes(res, "id pram should be a number");
 
     // delete the city from DB
-
+    try {
+      var result = await Airport.delete({ id: parseInt(id) });
+      if(result.affected === 0) return errRes(res, "Failed");
+    } catch (error) {
+      let errMsg = error.detail ? error.detail : error;
+      return errRes(res, { errMsg });
+    }
+    
     // return ok response
-    return okRes(res, {});
+    return okRes(res, { result });
   }
 }

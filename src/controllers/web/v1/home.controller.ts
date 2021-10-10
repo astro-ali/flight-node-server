@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Airport } from "../../../entity/Airport";
 import { City } from "../../../entity/City";
-import { okRes, errRes, isNotANumber, isNumber } from "../../../utility/util";
+import { okRes, errRes, isNumber } from "../../../utility/util";
 
 export default class HomeController {
   /**
@@ -39,7 +39,10 @@ export default class HomeController {
 
     // get the city from DB by id
     try {
-      var city = await City.findOne({ where: { id: id } });
+      var city = await City.findOne({
+        where: { id: id },
+        relations: ["airports"],
+      });
       if (!city) return errRes(res, "Not found", 404);
     } catch (error) {
       let errMsg = error.detail ? error.detail : error;
@@ -71,13 +74,12 @@ export default class HomeController {
   }
 
   /**
-   *
+   * a function to get only one Airport by id.
    * @param req
    * @param res
    * @returns response object with one airport object
    */
   static async getOneAirport(req: Request, res: Response): Promise<Response> {
-    //TODO:
     // get the id param from req
     let id = req.params.id;
 
@@ -86,8 +88,57 @@ export default class HomeController {
     if (!number) return errRes(res, "id param should be a number");
 
     // get the airport from DB by id
+    try {
+      var airport = await Airport.findOne({
+        where: { id: parseInt(id) },
+        relations: ["city"],
+      });
+      if (!airport) return errRes(res, "not found", 404);
+    } catch (error) {
+      let errMsg = error.detail ? error.detail : error;
+      return errRes(res, { errMsg });
+    }
 
     // reutrn response with the airport obj
+    return okRes(res, { airport });
+  }
+
+  /**
+   * This function gets all the
+   * flights from DB
+   * @param req
+   * @param res
+   * @returns response with array of flights
+   */
+  static async getAllFlights(req: Request, res: Response): Promise<Response> {
+    //TODO:
+
+    // add pagination to this controller
+
+    // add search options to this controller too
+    
+    // get all flights from DB 
+
+    // return them with ok response
+    return okRes(res, {});
+  }
+
+  /**
+   * A function to get only one flight by id.
+   * @param req 
+   * @param res 
+   * @returns response with the flight obj
+   */
+  static async getOneFlights(req: Request, res: Response): Promise<Response> {
+    //TODO:
+
+    // get the id param from the req obj
+
+    // validate the id param
+
+    // get the flight by id
+
+    // return the flight with ok response
     return okRes(res, {});
   }
 }

@@ -35,12 +35,7 @@ export class Flight extends BaseEntity {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  // relations
-  // many to many
-  // flight --> user
-  @ManyToMany(() => User, (user) => user.flights)
-  @JoinTable()
-  users: User[];
+  // Relations
 
   // many to one
   // Flights --> orgin
@@ -51,4 +46,10 @@ export class Flight extends BaseEntity {
   // Flights --> destination
   @ManyToOne(() => Airport, (airport) => airport.destinationFlights)
   destination: Airport;
+
+  // many to many
+  // flight --> user
+  @ManyToMany(() => User, (user) => user.flights)
+  @JoinTable()
+  users: User[];
 }

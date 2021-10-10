@@ -104,4 +104,31 @@ export default class Validate {
       type: "number",
     },
   });
+
+  static flight = (must = true) => ({
+    duration: {
+      presence: must,
+      type: "date",
+    },
+    distance: {
+      presence: must,
+      type: "string",
+    },
+    boarding_time: {
+      presence: must,
+      type: "date",
+    },
+    attendance_time: {
+      presence: must,
+      type: "date",
+    },
+    origin: {
+      presence: must,
+      type: "string",
+    },
+    destination: {
+      presence: must,
+      type: "string",
+    },
+  });
 }

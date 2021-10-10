@@ -2,6 +2,7 @@ import * as express from "express";
 import AdminController from "../../controllers/admin/v1/admin.controller";
 import AirportController from "../../controllers/admin/v1/airport.controller";
 import CityController from "../../controllers/admin/v1/city.controller";
+import FlightController from "../../controllers/admin/v1/flight.controller";
 import HomeController from "../../controllers/web/v1/home.controller";
 import auth from "../../middlewares/admin/auth";
 
@@ -13,7 +14,7 @@ const route = express.Router();
 route.post('/login', AdminController.login);
 
 
-// auth
+// Auth
 route.use(auth);
 
 // get admin information
@@ -43,5 +44,21 @@ route.post('/airports', AirportController.create);
 
 // get all airports
 route.get('/airports', HomeController.getAllAirports);
+
+// get one airport by id
+route.get('/airports/:id', HomeController.getOneAirport);
+
+// edit airport by id
+route.put('/airports/:id', AirportController.edit);
+
+// delete airport by id
+route.delete('/airports/:id', AirportController.delete);
+
+// Flight CRUD
+
+//TODO: 
+// This route need testing
+// add new Flight
+route.post('/flights', FlightController.create);
 
 export default route;
