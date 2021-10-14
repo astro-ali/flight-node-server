@@ -56,9 +56,19 @@ route.delete('/airports/:id', AirportController.delete);
 
 // Flight CRUD
 
-//TODO: 
-// This route need testing
 // add new Flight
 route.post('/flights', FlightController.create);
+
+// get all flights with pagination
+route.get('/flights', HomeController.getAllFlights);
+
+// get one flight by id
+route.get('/flights/:id', HomeController.getOneFlight);
+
+// edit one flight by id
+route.put('/flights/:id', FlightController.edit);
+
+// delete flight by id
+route.delete('/flights/:id', FlightController.delete);
 
 export default route;

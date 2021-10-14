@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
+import { isEmpty } from "validate.js";
 import { Airport } from "../../../entity/Airport";
 import { City } from "../../../entity/City";
-import { okRes, errRes, isNumber } from "../../../utility/util";
+import { Flight } from "../../../entity/Flight";
+import { okRes, errRes, isNumber, isNotANumber } from "../../../utility/util";
+import CONFIG from "../../../config";
 
 export default class HomeController {
   /**
@@ -111,34 +114,101 @@ export default class HomeController {
    * @returns response with array of flights
    */
   static async getAllFlights(req: Request, res: Response): Promise<Response> {
-    //TODO:
+    // get the queries
+    let query = req.query;
+    let page: any = query.page;
+    let perPage: any = query.perPage;
 
-    // add pagination to this controller
+    // get all the users from DB
+    const flights = await Flight.find({
+      relations: ["origin", "destination", "users"],
+    });
 
-    // add search options to this controller too
-    
-    // get all flights from DB 
+    // check if the query is empty and if it ture retuen all users
+    if (isEmpty(query)) return okRes(res, { flights });
 
-    // return them with ok response
-    return okRes(res, {});
+    // check if the values are numbers or not
+    let numPage: number = parseInt(page);
+    let numPerPage: number = parseInt(perPage);
+    if (isNotANumber(numPage)) {
+      return errRes(res, "query params are not a number");
+    }
+
+    // check if the query contain the page
+    if (page == null) return okRes(res, { flights });
+
+    // check if the value of page query is 0
+    if (page == "0") return okRes(res, { flights });
+
+    // get the query params
+    let realPage: number;
+    let realTake: number;
+
+    if (perPage) realTake = +perPage;
+    // the plus sign is for casting the string perPage into number
+    else {
+      perPage = "5";
+      realTake = 5;
+    }
+
+    // check if the user passed a page
+    if (page) realPage = +page === 1 ? 0 : (+page - 1) * realTake;
+    else {
+      realPage = 0;
+      page = "1";
+    }
+
+    // get the data paginated form DB
+    const findOptions = {
+      take: realTake,
+      skip: realPage,
+      relations: ["origin", "destination", "users"],
+    };
+
+    let data: any = await Flight.find(findOptions);
+    if (data.length === 0) return errRes(res, "there is no more data", 404);
+
+    // return ok response with the paginated result
+    return okRes(res, {
+      data,
+      perPage: realTake,
+      page: +page || 1,
+      next: `${
+        CONFIG.testing_domain
+      }/admin/v1/flights?perPage=${realTake}&page=${+page + 1}`,
+      prev: `${
+        CONFIG.testing_domain
+      }/admin/v1/flights?perPage=${realTake}&page=${+page - 1}`,
+    });
   }
 
   /**
    * A function to get only one flight by id.
-   * @param req 
-   * @param res 
+   * @param req
+   * @param res
    * @returns response with the flight obj
    */
-  static async getOneFlights(req: Request, res: Response): Promise<Response> {
-    //TODO:
-
+  static async getOneFlight(req: Request, res: Response): Promise<Response> {
     // get the id param from the req obj
+    let id = req.params.id;
 
     // validate the id param
+    let number = isNumber(id);
+    if (!number) return errRes(res, "id param should be a number");
 
     // get the flight by id
+    try {
+      var flight = await Flight.findOne({
+        where: { id: parseInt(id) },
+        relations: ["origin", "destination", "users"],
+      });
+      if (!flight) return errRes(res, "flight not found", 404);
+    } catch (error) {
+      let errMsg = error.detail ? error.detail : error;
+      return errRes(res, { errMsg });
+    }
 
     // return the flight with ok response
-    return okRes(res, {});
+    return okRes(res, { flight });
   }
 }

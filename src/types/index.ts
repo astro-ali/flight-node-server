@@ -32,12 +32,12 @@ type AirportBody = {
 };
 
 type FlightBody = {
-  duration: Date;
+  duration: string;
   distance: string;
-  boarding_time: Date;
-  attendance_time: Date;
-  origin: string;
-  destination: string;
+  boarding_time: string;
+  attendance_time: string;
+  origin: number;
+  destination: number;
 };
 
 export {
