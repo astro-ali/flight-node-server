@@ -12,10 +12,13 @@ export default async (req, res, next) => {
   try {
     let payload: any;
     payload = jwt.verify(token, CONFIG.user_secret);
-    if(!payload) return errRes(res, "You are not authorized");
+    if (!payload) return errRes(res, "You are not authorized");
 
     // get the user from DB by id
-    let user = await User.findOne({ where: { id: payload.id } });
+    let user = await User.findOne({
+      where: { id: payload.id },
+      relations: ["flights"],
+    });
 
     // pass the user obj to the request obj
     req.user = user;
@@ -23,6 +26,7 @@ export default async (req, res, next) => {
     // next
     return next();
   } catch (error) {
-      return errRes(res, error);
+    let errMsg = error.detail ? error.detail : error;
+    return errRes(res, { errMsg });
   }
 };

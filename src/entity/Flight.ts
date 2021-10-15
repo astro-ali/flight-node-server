@@ -50,6 +50,6 @@ export class Flight extends BaseEntity {
   // many to many
   // flight --> user
   @ManyToMany(() => User, (user) => user.flights)
-  @JoinTable()
+  @JoinTable({ name: "booked-flights" })
   users: User[];
 }

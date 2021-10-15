@@ -9,11 +9,10 @@ import * as jwt from "jsonwebtoken";
 import CONFIG from "../../../config";
 
 export default class UserController {
-
   /**
-   * 
-   * @param req 
-   * @param res 
+   *
+   * @param req
+   * @param res
    * @returns response with usr obj
    */
   static async register(req: Request, res: Response): Promise<Response> {
@@ -44,9 +43,9 @@ export default class UserController {
   }
 
   /**
-   * login function 
-   * @param req 
-   * @param res 
+   * login function
+   * @param req
+   * @param res
    * @returns Promise --> response
    */
   static async login(req: Request, res: Response): Promise<Response> {
@@ -62,7 +61,8 @@ export default class UserController {
       var user = await User.findOne({ where: { username: body.username } });
       if (!user) return errRes(res, "Didn't find your username");
     } catch (error) {
-      return errRes(res, "Didn't find your username");
+      let errMsg = error.detail ? error.detail : error;
+      return errRes(res, { errMsg });
     }
 
     // compaire the body password with the password in DB
@@ -108,6 +108,21 @@ export default class UserController {
     await user.save();
 
     // return ok response
+    let { password, ...userObj } = user;
+    return okRes(res, { userObj });
+  }
+
+  /**
+   * This function gets all user info
+   * @param req
+   * @param res
+   * @returns response obj with user info
+   */
+  static async getUserInfo(req, res): Promise<Response> {
+    // get the user obj from req object
+    let user = req.user;
+
+    // return ok response with user obj without password
     let { password, ...userObj } = user;
     return okRes(res, { userObj });
   }

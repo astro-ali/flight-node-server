@@ -65,7 +65,9 @@ export default class HomeController {
   static async getAllAirports(req: Request, res: Response): Promise<Response> {
     // get all Airports from DB
     try {
-      var airports = await Airport.find({ relations: ["city"] });
+      var airports = await Airport.find({
+        relations: ["city", "OriginFlights", "destinationFlights"],
+      });
       if (!airports) return errRes(res, "Not found", 404);
     } catch (error) {
       let errMsg = error.detail ? error.detail : error;
