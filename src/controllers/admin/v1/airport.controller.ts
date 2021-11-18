@@ -116,8 +116,19 @@ export default class AirportController {
     let number = isNumber(id);
     if (!number) return errRes(res, "id pram should be a number");
 
-    // delete the city from DB
+    
     try {
+      // check if the airport have relations with other entities
+      let airport = await Airport.findOne({
+        where: { id: parseInt(id) },
+        relations: ["OriginFlights", "destinationFlights"],
+      });
+      
+      if(airport.OriginFlights.length > 0 || airport.destinationFlights.length > 0){
+        return errRes(res, "You can not delete this airport because it has some relations with other tables you have to delete the related objects first");
+      }
+
+      // delete the city from DB
       var result = await Airport.delete({ id: parseInt(id) });
       if(result.affected === 0) return errRes(res, "Failed");
     } catch (error) {

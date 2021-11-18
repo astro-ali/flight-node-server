@@ -6,6 +6,7 @@ import { okRes } from "./utility/util";
 import notFound from "./middlewares/web/notFound";
 import webv1 from "./routes/web/v1";
 import adminv1 from "./routes/admin/v1";
+let cors = require('cors');
 const app = express();
 const port = CONFIG.port || 4000;
 
@@ -13,6 +14,7 @@ createConnection()
   .then(async (connection) => {
     console.log("Connected to DB successfully");
     //
+    app.use(cors());
     app.use(express.json());
 
     app.get("/", (req, res) => {

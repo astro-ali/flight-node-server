@@ -96,7 +96,7 @@ export default class HomeController {
     try {
       var airport = await Airport.findOne({
         where: { id: parseInt(id) },
-        relations: ["city"],
+        relations: ["city","OriginFlights","destinationFlights"],
       });
       if (!airport) return errRes(res, "not found", 404);
     } catch (error) {

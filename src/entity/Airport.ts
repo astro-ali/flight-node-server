@@ -3,7 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
+  ManyToOne, 
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -35,11 +35,13 @@ export class Airport extends BaseEntity {
 
   //one to many
   // airport --> flights
+  // all the flight that will take off from this airport.
   @OneToMany(() => Flight, (flight) => flight.origin)
   OriginFlights: Flight[];
 
   //one to many
   // airport --> destination
+  // all the flight that will land in this airport.
   @OneToMany(() => Flight, (flight) => flight.destination)
   destinationFlights: Flight[];
 }

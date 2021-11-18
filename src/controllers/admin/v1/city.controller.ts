@@ -88,14 +88,26 @@ export default class CityController {
     if (!number) return errRes(res, "id pram should be a number");
 
     try {
+      // check if the city have a relations with other entities
+      let cityAirports = await City.findOne({
+        where: { id: parseInt(id) },
+        relations: ["airports"],
+      });
+      if (cityAirports.airports.length > 0) {
+        return errRes(
+          res,
+          "You can not delete this city because it has some relations with other tables you have to delete the related objects first"
+        );
+      }
+
       // delete the city from DB
       var city = await City.delete({ id: parseInt(id) });
-      if(city.affected === 0) return errRes(res, "Failed");
+      if (city.affected === 0) return errRes(res, "Failed");
     } catch (error) {
       let errMsg = error.detail ? error.detail : error;
       return errRes(res, { errMsg });
     }
-    
+
     // return ok response
     return okRes(res, { city });
   }

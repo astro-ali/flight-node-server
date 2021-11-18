@@ -39,7 +39,7 @@ export default class AdminController {
     let token = jwt.sign({ id: admin.id }, CONFIG.admin_secret);
 
     // return ok response with token
-    return okRes(res, { token });
+    return okRes(res, { token, role: "admin" });
   }
 
   /**
